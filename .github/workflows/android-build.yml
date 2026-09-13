@@ -39,6 +39,10 @@ jobs:
         working-directory: ebbinghaus-tracker
         run: npx cap sync android
 
+      - name: Make Gradle wrapper executable
+        working-directory: ebbinghaus-tracker/android
+        run: chmod +x gradlew
+
       - name: Build debug APK
         working-directory: ebbinghaus-tracker/android
         run: ./gradlew assembleDebug --no-daemon
