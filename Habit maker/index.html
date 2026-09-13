@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Habit Tracker</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="header-left">
+      <span class="logo">🌱 Habit Tracker</span>
+    </div>
+    <div class="header-right">
+      <button id="btn-open-file" class="btn btn-primary" title="Open or create your data file">📂 Open Data File</button>
+      <button id="btn-add-habit" class="btn btn-success" title="Add a new habit" disabled>+ Add Habit</button>
+      <button id="btn-settings" class="btn btn-ghost" title="Manage habits" disabled>⚙ Manage</button>
+    </div>
+  </header>
+
+  <!-- FILE NOTICE: first-time setup -->
+  <div id="file-notice" class="file-notice hidden">
+    <div class="file-notice-inner">
+      <p>👋 Welcome! To get started, open an existing <code>data.json</code> file or create a new one.<br><small class="muted">You only need to do this once — after that the app opens automatically.</small></p>
+      <button id="btn-open-file-2" class="btn btn-primary">📂 Open / Create data.json</button>
+    </div>
+  </div>
+
+  <!-- RESUME NOTICE: handle remembered, needs one click -->
+  <div id="resume-notice" class="file-notice hidden">
+    <div class="file-notice-inner">
+      <p>🔒 Your data file was found! Click below to resume — the browser needs one quick confirmation to re-open it.</p>
+      <button id="btn-resume" class="btn btn-primary">▶ Resume</button>
+      <br><br>
+      <button id="btn-change-file" class="btn btn-ghost btn-sm">📂 Use a different file</button>
+    </div>
+  </div>
+
+  <!-- LOADING STATE -->
+  <div id="loading-notice" class="file-notice">
+    <div class="file-notice-inner">
+      <p>⏳ Loading your data…</p>
+    </div>
+  </div>
+
+  <!-- MAIN APP (hidden until file is loaded) -->
+  <main id="app" class="app hidden">
+
+    <!-- TODAY PANEL -->
+    <section class="card" id="today-panel">
+      <h2 class="section-title">📋 Today — <span id="today-date"></span></h2>
+      <div id="habits-list" class="habits-list">
+        <!-- habits rendered here -->
+      </div>
+      <p id="no-habits-msg" class="muted hidden">No habits yet. Click <strong>+ Add Habit</strong> to get started!</p>
+    </section>
+
+    <!-- CALENDAR PANEL -->
+    <section class="card" id="calendar-panel">
+      <div class="calendar-header">
+        <h2 class="section-title">📅 Calendar</h2>
+        <select id="habit-select" class="habit-select">
+          <option value="">— Select a habit —</option>
+        </select>
+      </div>
+      <div id="calendar-container" class="calendar-container">
+        <div class="calendar-nav">
+          <button id="cal-prev" class="btn btn-ghost btn-sm">‹ Prev</button>
+          <span id="cal-month-label" class="cal-month-label"></span>
+          <button id="cal-next" class="btn btn-ghost btn-sm">Next ›</button>
+        </div>
+        <div class="calendar-grid" id="calendar-grid">
+          <!-- days rendered here -->
+        </div>
+      </div>
+      <p id="cal-no-habit" class="muted">Select a habit above to view its calendar.</p>
+    </section>
+
+    <!-- STREAKS PANEL -->
+    <section class="card" id="streaks-panel">
+      <h2 class="section-title">🔥 Streaks & Stats</h2>
+      <div id="streaks-list" class="streaks-list">
+        <!-- streaks rendered here -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- SETTINGS MODAL -->
+  <div id="modal-settings" class="modal-overlay hidden">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>⚙ Manage Habits</h3>
+        <button class="btn btn-ghost btn-sm modal-close" data-modal="modal-settings">✕</button>
+      </div>
+      <div class="modal-body">
+        <div id="manage-habits-list" class="manage-habits-list">
+          <!-- managed habits -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADD HABIT MODAL -->
+  <div id="modal-add-habit" class="modal-overlay hidden">
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <h3 id="add-modal-title">+ Add Habit</h3>
+        <button class="btn btn-ghost btn-sm modal-close" data-modal="modal-add-habit">✕</button>
+      </div>
+      <div class="modal-body">
+        <input type="text" id="habit-name-input" class="text-input" placeholder="e.g. Drink 2L water" maxlength="60" />
+        <input type="hidden" id="editing-habit-id" />
+        <div class="modal-actions">
+          <button class="btn btn-ghost modal-close" data-modal="modal-add-habit">Cancel</button>
+          <button id="btn-save-habit" class="btn btn-primary">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DELETE CONFIRM MODAL -->
+  <div id="modal-delete" class="modal-overlay hidden">
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <h3>🗑 Delete Habit</h3>
+        <button class="btn btn-ghost btn-sm modal-close" data-modal="modal-delete">✕</button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to delete <strong id="delete-habit-name"></strong>? All its history will be lost.</p>
+        <div class="modal-actions">
+          <button class="btn btn-ghost modal-close" data-modal="modal-delete">Cancel</button>
+          <button id="btn-confirm-delete" class="btn btn-danger">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

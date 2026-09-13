@@ -1,0 +1,115 @@
+{
+  "habits": [
+    {
+      "id": "mszy4mnv28v9km8w98q",
+      "name": "1 Chapter / day (Notes: 10 min? / Keep ch - open & sleep)",
+      "createdAt": "2026-08-19",
+      "logs": {
+        "2026-08-19": true,
+        "2026-08-20": true,
+        "2026-08-21": true
+      }
+    },
+    {
+      "id": "mszy628eapjz8o8upz5",
+      "name": "Piano learn one scale and one chord on sight reading",
+      "createdAt": "2026-08-19",
+      "logs": {
+        "2026-08-19": true,
+        "2026-08-20": true,
+        "2026-08-21": true
+      }
+    },
+    {
+      "id": "mszy6bznajb3l6bw81",
+      "name": "Gym / Swimming (Note: Immediately after waking up)",
+      "createdAt": "2026-08-19",
+      "logs": {
+        "2026-08-19": true,
+        "2026-08-21": false,
+        "2026-09-11": true
+      }
+    },
+    {
+      "id": "mszy6iznaq7mju4fgjo",
+      "name": "1 book (Note: summary at least)",
+      "createdAt": "2026-08-19",
+      "logs": {
+        "2026-08-19": true,
+        "2026-08-20": true,
+        "2026-08-21": true
+      }
+    },
+    {
+      "id": "mszy6q36dvum506d0i",
+      "name": "Statistics  Bookmark (Note: 2 min?)",
+      "createdAt": "2026-08-19",
+      "logs": {
+        "2026-08-19": true,
+        "2026-08-20": true,
+        "2026-08-21": false
+      }
+    },
+    {
+      "id": "mszy6wmk5q8rxdwlkbd",
+      "name": "Journal (Note: 10 min)",
+      "createdAt": "2026-08-19",
+      "logs": {
+        "2026-08-19": true,
+        "2026-08-20": true,
+        "2026-08-21": true,
+        "2026-09-11": true
+      }
+    },
+    {
+      "id": "mszy70i48orornoe22",
+      "name": "Meditation (Note: 10 min strict not more)",
+      "createdAt": "2026-08-19",
+      "logs": {
+        "2026-08-19": true,
+        "2026-08-21": true,
+        "2026-09-11": true
+      }
+    },
+    {
+      "id": "mszy74468naw6vnfunw",
+      "name": "Interview Prep (Note: Just 1/2 per day)",
+      "createdAt": "2026-08-19",
+      "logs": {
+        "2026-08-19": true,
+        "2026-08-20": true,
+        "2026-08-21": true
+      }
+    },
+    {
+      "id": "mszy78ao200rqws16jd",
+      "name": "Left hand writing",
+      "createdAt": "2026-08-19",
+      "logs": {
+        "2026-08-19": true,
+        "2026-08-20": true,
+        "2026-08-21": true
+      }
+    },
+    {
+      "id": "mszy7dri2kfksxckne",
+      "name": "One presentation per day",
+      "createdAt": "2026-08-19",
+      "logs": {
+        "2026-08-19": true,
+        "2026-08-20": true,
+        "2026-08-21": false
+      }
+    },
+    {
+      "id": "mszy7z0fnks106vbcc",
+      "name": "Eat dry fruits",
+      "createdAt": "2026-08-19",
+      "logs": {
+        "2026-08-19": true,
+        "2026-08-20": false,
+        "2026-08-21": true
+      }
+    }
+  ]
+}

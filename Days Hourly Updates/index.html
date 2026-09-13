@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HourlyUpdates – Learn Every Hour</title>
+  <style>
+    :root {
+      --primary: #4f46e5;
+      --primary-light: #eef2ff;
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --danger: #ef4444;
+      --radius: 10px;
+      --shadow: 0 1px 3px rgba(15,23,42,.08), 0 1px 2px rgba(15,23,42,.04);
+    }
+    [data-theme="dark"] {
+      --primary: #818cf8;
+      --primary-light: #1e1b4b;
+      --bg: #0f172a;
+      --surface: #1e293b;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --border: #334155;
+      --shadow: 0 1px 3px rgba(0,0,0,.35);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.5;
+      min-height: 100vh;
+      transition: background .2s, color .2s;
+    }
+
+    /* ── Header ── */
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 20px;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: var(--shadow);
+    }
+    .logo {
+      font-weight: 700;
+      font-size: 16px;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+    .live-clock {
+      font-size: 12px;
+      color: var(--muted);
+      font-variant-numeric: tabular-nums;
+    }
+    .hdr-right { margin-left: auto; display: flex; gap: 6px; align-items: center; }
+    .hdr-btn {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 5px 10px;
+      cursor: pointer;
+      color: var(--muted);
+      font-size: 12px;
+      font-family: inherit;
+      transition: all .15s;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .hdr-btn:hover { background: var(--primary-light); color: var(--primary); border-color: var(--primary); }
+
+    /* ── Main ── */
+    main { max-width: 700px; margin: 0 auto; padding: 20px 16px 60px; }
+
+    /* ── Date nav ── */
+    .date-nav {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+      box-shadow: var(--shadow);
+    }
+    .date-nav-center { flex: 1; text-align: center; line-height: 1.3; }
+    .date-main {
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-block;
+    }
+    .date-main:hover { color: var(--primary); }
+    .date-sub { font-size: 11px; color: var(--muted); }
+    .nav-arrow {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      width: 30px; height: 30px;
+      cursor: pointer;
+      color: var(--muted);
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all .15s;
+      line-height: 1;
+    }
+    .nav-arrow:hover:not(:disabled) { background: var(--primary); color: white; border-color: var(--primary); }
+    .nav-arrow:disabled { opacity: .3; cursor: default; }
+    input[type="date"] { display: none; }
+
+    /* ── Quick-add card ── */
+    .quick-card {
+      background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      margin-bottom: 14px;
+      box-shadow: 0 4px 16px rgba(79,70,229,.3);
+      color: white;
+      transition: opacity .2s;
+    }
+    [data-theme="dark"] .quick-card { background: linear-gradient(135deg, #3730a3 0%, #5b21b6 100%); }
+    .qc-label { font-size: 10px; text-transform: uppercase; letter-spacing: .06em; opacity: .75; margin-bottom: 2px; }
+    .qc-hour { font-size: 22px; font-weight: 700; margin-bottom: 12px; }
+    .qc-row { display: flex; gap: 8px; }
+    .qc-input {
+      flex: 1;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 6px;
+      background: rgba(255,255,255,.18);
+      color: white;
+      font-size: 13px;
+      font-family: inherit;
+      outline: none;
+      transition: background .15s;
+    }
+    .qc-input::placeholder { color: rgba(255,255,255,.55); }
+    .qc-input:focus { background: rgba(255,255,255,.28); }
+    .qc-btn {
+      background: white;
+      color: #4f46e5;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 16px;
+      font-weight: 700;
+      font-size: 13px;
+      font-family: inherit;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: opacity .15s;
+    }
+    .qc-btn:hover { opacity: .88; }
+
+    /* ── Stats ── */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px;
+      text-align: center;
+      box-shadow: var(--shadow);
+    }
+    .stat-n { font-size: 22px; font-weight: 700; color: var(--primary); }
+    .stat-l { font-size: 10px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin-top: 2px; }
+
+    /* ── Search ── */
+    .search-wrap { margin-bottom: 14px; display: none; }
+    .search-wrap.on { display: block; }
+    .search-input {
+      width: 100%;
+      padding: 9px 14px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 13px;
+      font-family: inherit;
+      outline: none;
+      box-shadow: var(--shadow);
+      transition: border-color .15s;
+      margin-bottom: 10px;
+    }
+    .search-input:focus { border-color: var(--primary); }
+    .search-result {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 10px 14px;
+      margin-bottom: 8px;
+      box-shadow: var(--shadow);
+    }
+    .sr-meta { font-size: 11px; color: var(--muted); margin-bottom: 4px; }
+    mark { background: #fef08a; color: inherit; border-radius: 2px; padding: 0 1px; }
+    [data-theme="dark"] mark { background: #92400e; }
+
+    /* ── Section title ── */
+    .section-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--muted);
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    /* ── Hour blocks ── */
+    .hour-block {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 8px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      transition: border-color .15s;
+    }
+    .hour-block.current { border-color: var(--primary); }
+    .hour-head {
+      display: flex;
+      align-items: center;
+      padding: 10px 14px;
+      cursor: pointer;
+      gap: 10px;
+      user-select: none;
+      transition: background .15s;
+    }
+    .hour-head:hover { background: var(--primary-light); }
+    .h-time { font-weight: 600; font-size: 13px; flex: 1; }
+    .h-badge {
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 10px;
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+    .h-badge.now { background: var(--primary); color: white; }
+    .h-chevron { color: var(--muted); font-size: 11px; transition: transform .2s; }
+    .hour-block.open .h-chevron { transform: rotate(180deg); }
+    .hour-body { display: none; border-top: 1px solid var(--border); padding: 10px 14px 12px; }
+    .hour-block.open .hour-body { display: block; }
+
+    /* ── Note list ── */
+    .note-list { list-style: none; display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
+    .note-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 7px 10px;
+    }
+    .note-dot { color: var(--primary); font-size: 16px; line-height: 1; margin-top: 1px; flex-shrink: 0; }
+    .note-content { flex: 1; min-width: 0; }
+    .note-text { font-size: 13px; word-break: break-word; }
+    .note-ts { font-size: 10px; color: var(--muted); margin-top: 2px; }
+    .note-acts { display: flex; gap: 2px; opacity: 0; transition: opacity .15s; flex-shrink: 0; margin-top: 1px; }
+    .note-item:hover .note-acts { opacity: 1; }
+    .note-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 2px 5px;
+      border-radius: 4px;
+      font-size: 12px;
+      color: var(--muted);
+      transition: all .15s;
+    }
+    .note-btn.edit:hover { background: var(--primary-light); color: var(--primary); }
+    .note-btn.del:hover { background: #fee2e2; color: var(--danger); }
+    textarea.note-edit {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--primary);
+      border-radius: 4px;
+      color: var(--text);
+      font: inherit;
+      font-size: 13px;
+      padding: 4px 6px;
+      resize: none;
+      outline: none;
+    }
+
+    /* ── Hour add row ── */
+    .h-add-row { display: flex; gap: 7px; }
+    .h-input {
+      flex: 1;
+      padding: 7px 10px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--bg);
+      color: var(--text);
+      font: inherit;
+      font-size: 13px;
+      outline: none;
+      transition: border-color .15s;
+    }
+    .h-input:focus { border-color: var(--primary); }
+    .h-add-btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 7px 14px;
+      font-weight: 600;
+      font-size: 12px;
+      font-family: inherit;
+      cursor: pointer;
+      transition: opacity .15s;
+    }
+    .h-add-btn:hover { opacity: .85; }
+
+    /* ── Empty state ── */
+    .empty { text-align: center; padding: 40px 20px; color: var(--muted); }
+    .empty-icon { font-size: 36px; margin-bottom: 10px; }
+    .empty p { font-size: 13px; }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(12px);
+      background: var(--text);
+      color: var(--bg);
+      padding: 8px 18px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 500;
+      z-index: 999;
+      opacity: 0;
+      transition: all .25s;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* ── Responsive ── */
+    @media (max-width: 500px) {
+      .stats-row { grid-template-columns: repeat(2, 1fr); }
+      .hdr-btn span { display: none; }
+      .qc-hour { font-size: 18px; }
+    }
+
+    /* ── Restore Modal ── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15,23,42,.55);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      backdrop-filter: blur(3px);
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      width: 100%;
+      max-width: 440px;
+      box-shadow: 0 20px 50px rgba(0,0,0,.28);
+      animation: pop .18s ease;
+    }
+    @keyframes pop { from { transform: scale(.93); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    .modal-head {
+      display: flex;
+      align-items: center;
+      padding: 16px 20px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .modal-title { font-weight: 700; font-size: 15px; flex: 1; }
+    .modal-close {
+      background: none; border: none; cursor: pointer;
+      color: var(--muted); font-size: 16px; padding: 2px 7px;
+      border-radius: 4px; transition: background .15s;
+    }
+    .modal-close:hover { background: var(--border); }
+    .modal-body { padding: 16px 20px; }
+    .modal-file { font-weight: 600; font-size: 13px; margin-bottom: 2px; color: var(--primary); word-break: break-all; }
+    .modal-meta { font-size: 12px; color: var(--muted); margin-bottom: 14px; }
+    .modal-warn { font-size: 12px; color: var(--muted); margin-bottom: 10px; font-weight: 500; }
+    .modal-opts { display: flex; flex-direction: column; gap: 8px; }
+    .modal-opt {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      padding: 12px 14px;
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all .15s;
+    }
+    .modal-opt:hover { border-color: var(--primary); background: var(--primary-light); }
+    .modal-opt.danger:hover { border-color: var(--danger); background: #fee2e2; }
+    [data-theme="dark"] .modal-opt.danger:hover { background: #450a0a; border-color: var(--danger); }
+    .opt-icon { font-size: 22px; line-height: 1.2; flex-shrink: 0; }
+    .opt-title { font-weight: 600; font-size: 13px; }
+    .modal-opt.danger .opt-title { color: var(--danger); }
+    .opt-desc { font-size: 12px; color: var(--muted); margin-top: 2px; line-height: 1.4; }
+    .modal-footer {
+      padding: 12px 20px 16px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+    }
+    .mf-cancel {
+      background: none; border: 1px solid var(--border); border-radius: 6px;
+      padding: 7px 18px; cursor: pointer; font: inherit; font-size: 13px;
+      color: var(--muted); transition: all .15s;
+    }
+    .mf-cancel:hover { background: var(--border); }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">⏱ HourlyUpdates</div>
+  <div class="live-clock" id="clock"></div>
+  <div class="hdr-right">
+    <button class="hdr-btn" id="btnSearch">🔍 <span>Search</span></button>
+    <button class="hdr-btn" id="btnExport">⬇ <span>Export</span></button>
+    <button class="hdr-btn" id="btnBackup" title="Download all notes as a JSON backup">💾 <span>Backup</span></button>
+    <button class="hdr-btn" id="btnRestore" title="Restore from a JSON backup file">📂 <span>Restore</span></button>
+    <input type="file" id="restoreInput" accept=".json" style="display:none" />
+    <button class="hdr-btn" id="btnTheme">🌙 <span>Dark</span></button>
+  </div>
+</header>
+
+<main>
+
+  <!-- Date Navigation -->
+  <div class="date-nav">
+    <button class="nav-arrow" id="btnPrev" title="Previous day">&#8249;</button>
+    <div class="date-nav-center">
+      <div class="date-main" id="dateMain" title="Click to pick a date"></div>
+      <div class="date-sub" id="dateSub"></div>
+    </div>
+    <button class="nav-arrow" id="btnNext" title="Next day">&#8250;</button>
+    <input type="date" id="datePicker" />
+  </div>
+
+  <!-- Current Hour Quick-Add (today only) -->
+  <div class="quick-card" id="quickCard">
+    <div class="qc-label">Current Hour</div>
+    <div class="qc-hour" id="qcHour"></div>
+    <div class="qc-row">
+      <input class="qc-input" id="qcInput" placeholder="What are you learning right now? (Enter to add)" autocomplete="off" />
+      <button class="qc-btn" id="qcBtn">+ Add</button>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-row">
+    <div class="stat-card"><div class="stat-n" id="sDay">0</div><div class="stat-l">Today</div></div>
+    <div class="stat-card"><div class="stat-n" id="sHours">0</div><div class="stat-l">Hours</div></div>
+    <div class="stat-card"><div class="stat-n" id="sTotal">0</div><div class="stat-l">All Notes</div></div>
+    <div class="stat-card"><div class="stat-n" id="sDays">0</div><div class="stat-l">Days</div></div>
+  </div>
+
+  <!-- Search -->
+  <div class="search-wrap" id="searchWrap">
+    <input class="search-input" id="searchInput" placeholder="Search across all your notes…" autocomplete="off" />
+    <div id="searchResults"></div>
+  </div>
+
+  <!-- Timeline -->
+  <div id="timelineWrap">
+    <div class="section-title" id="timelineTitle">Today's Timeline</div>
+    <div id="timeline"></div>
+  </div>
+
+</main>
+
+<div class="toast" id="toast"></div>
+
+<!-- Restore Modal -->
+<div class="modal-overlay" id="restoreModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <span class="modal-title">📂 Restore Backup</span>
+      <button class="modal-close" id="btnModalClose">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-file" id="rmFilename"></div>
+      <div class="modal-meta" id="rmInfo"></div>
+      <p class="modal-warn">How would you like to restore?</p>
+      <div class="modal-opts">
+        <div class="modal-opt" id="optMerge">
+          <div class="opt-icon">🔀</div>
+          <div>
+            <div class="opt-title">Merge (Recommended)</div>
+            <div class="opt-desc">Adds notes from the backup alongside your current notes. Nothing already saved is lost.</div>
+          </div>
+        </div>
+        <div class="modal-opt danger" id="optReplace">
+          <div class="opt-icon">⚠️</div>
+          <div>
+            <div class="opt-title">Replace All</div>
+            <div class="opt-desc">Deletes ALL current data and replaces it with the backup. This cannot be undone.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="mf-cancel" id="btnModalCancel">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script>
+'use strict';
+/* ── Storage ─────────────────────────────────────────────── */
+const STORE_KEY = 'hourly_notes_v1';
+let db = {};
+
+function loadDb() {
+  try { db = JSON.parse(localStorage.getItem(STORE_KEY) || '{}'); }
+  catch { db = {}; }
+}
+function saveDb() {
+  localStorage.setItem(STORE_KEY, JSON.stringify(db));
+}
+
+/* ── Date helpers ────────────────────────────────────────── */
+const pad2 = n => String(n).padStart(2, '0');
+
+function todayStr() {
+  const d = new Date();
+  return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`;
+}
+
+function shiftDate(str, delta) {
+  const [y, m, d] = str.split('-').map(Number);
+  const dt = new Date(y, m - 1, d);
+  dt.setDate(dt.getDate() + delta);
+  return `${dt.getFullYear()}-${pad2(dt.getMonth()+1)}-${pad2(dt.getDate())}`;
+}
+
+function fmtDate(str) {
+  const [y, m, d] = str.split('-').map(Number);
+  return new Date(y, m - 1, d).toLocaleDateString('en-US', {
+    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+  });
+}
+
+function fmtHour(h) {
+  const fmt = n => {
+    if (n === 0 || n === 24) return '12 AM';
+    if (n === 12) return '12 PM';
+    return n < 12 ? `${n} AM` : `${n - 12} PM`;
+  };
+  return `${fmt(h)} \u2013 ${fmt(h + 1)}`;
+}
+
+function fmtTime(ts) {
+  return new Date(ts).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+}
+
+function relLabel(str) {
+  const today = todayStr();
+  if (str === today) return 'Today';
+  if (str === shiftDate(today, -1)) return 'Yesterday';
+  const days = Math.round((new Date(today) - new Date(str)) / 86400000);
+  if (days < 7) return `${days} days ago`;
+  return null;
+}
+
+/* ── HTML escape ─────────────────────────────────────────── */
+function esc(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+/* ── Data operations ─────────────────────────────────────── */
+function getDayNotes(dateStr) { return db[dateStr] || {}; }
+
+function addNote(dateStr, hour, text) {
+  if (!db[dateStr]) db[dateStr] = {};
+  if (!db[dateStr][hour]) db[dateStr][hour] = [];
+  db[dateStr][hour].push({ id: Date.now() + Math.random(), text, ts: Date.now() });
+  saveDb();
+}
+
+function deleteNote(dateStr, hour, id) {
+  if (!db[dateStr]?.[hour]) return;
+  db[dateStr][hour] = db[dateStr][hour].filter(n => n.id !== id);
+  if (!db[dateStr][hour].length) delete db[dateStr][hour];
+  if (!Object.keys(db[dateStr]).length) delete db[dateStr];
+  saveDb();
+}
+
+function editNote(dateStr, hour, id, text) {
+  const n = db[dateStr]?.[hour]?.find(n => n.id === id);
+  if (n) { n.text = text; saveDb(); }
+}
+
+/* ── App state ───────────────────────────────────────────── */
+let curDate = todayStr();
+let isDark = localStorage.getItem('theme') === 'dark';
+let searchOpen = false;
+
+/* ── Stats ───────────────────────────────────────────────── */
+function updateStats() {
+  const day = getDayNotes(curDate);
+  let dayCount = 0, hourCount = 0;
+  for (const h in day) { dayCount += day[h].length; if (day[h].length) hourCount++; }
+  let total = 0;
+  for (const d in db) for (const h in db[d]) total += db[d][h].length;
+
+  document.getElementById('sDay').textContent = dayCount;
+  document.getElementById('sHours').textContent = hourCount;
+  document.getElementById('sTotal').textContent = total;
+  document.getElementById('sDays').textContent = Object.keys(db).length;
+}
+
+/* ── Quick-add card ──────────────────────────────────────── */
+function updateQuickCard() {
+  const card = document.getElementById('quickCard');
+  if (curDate !== todayStr()) { card.hidden = true; return; }
+  card.hidden = false;
+  document.getElementById('qcHour').textContent = fmtHour(new Date().getHours());
+}
+
+/* ── Date nav ────────────────────────────────────────────── */
+function updateDateNav() {
+  const today = todayStr();
+  const isToday = curDate === today;
+  const label = relLabel(curDate);
+
+  document.getElementById('dateMain').textContent = label || fmtDate(curDate);
+  document.getElementById('dateSub').textContent = isToday ? fmtDate(curDate) : curDate;
+  document.getElementById('btnNext').disabled = curDate >= today;
+  document.getElementById('timelineTitle').textContent = isToday ? "Today's Timeline" : 'Learning Timeline';
+}
+
+/* ── Timeline ────────────────────────────────────────────── */
+function renderTimeline() {
+  const tl = document.getElementById('timeline');
+  const day = getDayNotes(curDate);
+  const isToday = curDate === todayStr();
+  const curHour = new Date().getHours();
+
+  const hourSet = new Set(Object.keys(day).map(Number));
+  if (isToday) hourSet.add(curHour);
+  const hours = [...hourSet].sort((a, b) => a - b);
+
+  if (hours.length === 0) {
+    tl.innerHTML = `
+      <div class="empty">
+        <div class="empty-icon">📝</div>
+        <p>${isToday ? "Nothing yet — start adding what you're learning!" : 'No notes recorded on this day.'}</p>
+      </div>`;
+    return;
+  }
+
+  tl.innerHTML = '';
+
+  for (const h of hours) {
+    const notes = day[h] || [];
+    const isCur = isToday && h === curHour;
+    const hasNotes = notes.length > 0;
+
+    const block = document.createElement('div');
+    block.className = `hour-block${isCur ? ' current' : ''}${(isCur || hasNotes) ? ' open' : ''}`;
+    block.dataset.hour = h;
+
+    const notesHtml = notes.map(n => `
+      <li class="note-item" data-id="${n.id}" data-hour="${h}">
+        <span class="note-dot">•</span>
+        <div class="note-content">
+          <div class="note-text">${esc(n.text)}</div>
+          <div class="note-ts">${fmtTime(n.ts)}</div>
+        </div>
+        <div class="note-acts">
+          <button class="note-btn edit" data-act="edit" title="Edit">✏</button>
+          <button class="note-btn del"  data-act="del"  title="Delete">✕</button>
+        </div>
+      </li>`).join('');
+
+    block.innerHTML = `
+      <div class="hour-head">
+        <span class="h-time">${fmtHour(h)}</span>
+        ${hasNotes ? `<span class="h-badge">${notes.length} note${notes.length !== 1 ? 's' : ''}</span>` : ''}
+        ${isCur    ? `<span class="h-badge now">Now</span>` : ''}
+        <span class="h-chevron">▼</span>
+      </div>
+      <div class="hour-body">
+        <ul class="note-list">${notesHtml}</ul>
+        <div class="h-add-row">
+          <input class="h-input" placeholder="Add a note for this hour…" autocomplete="off" />
+          <button class="h-add-btn">+ Add</button>
+        </div>
+      </div>`;
+
+    block.querySelector('.hour-head').addEventListener('click', e => {
+      if (e.target.closest('.h-add-row')) return;
+      block.classList.toggle('open');
+    });
+
+    const inp = block.querySelector('.h-input');
+    inp.addEventListener('keydown', e => { if (e.key === 'Enter') doAddNote(inp, h); });
+    block.querySelector('.h-add-btn').addEventListener('click', () => doAddNote(inp, h));
+
+    block.querySelector('.note-list').addEventListener('click', e => {
+      const btn = e.target.closest('[data-act]');
+      if (!btn) return;
+      const item = btn.closest('.note-item');
+      const id   = parseFloat(item.dataset.id);
+      const hr   = Number(item.dataset.hour);
+      if (btn.dataset.act === 'del') {
+        deleteNote(curDate, hr, id);
+        toast('Note deleted');
+        render();
+      } else if (btn.dataset.act === 'edit') {
+        startEdit(item, hr, id);
+      }
+    });
+
+    tl.appendChild(block);
+  }
+}
+
+function doAddNote(inp, hour) {
+  const text = inp.value.trim();
+  if (!text) return;
+  addNote(curDate, hour, text);
+  inp.value = '';
+  render();
+  toast('Note added!');
+  requestAnimationFrame(() => {
+    const el = document.querySelector(`.hour-block[data-hour="${hour}"] .h-input`);
+    if (el) el.focus();
+  });
+}
+
+function startEdit(item, hour, id) {
+  const textEl = item.querySelector('.note-text');
+  const original = textEl.textContent;
+  const ta = document.createElement('textarea');
+  ta.className = 'note-edit';
+  ta.value = original;
+  ta.rows = Math.max(1, Math.ceil(original.length / 55));
+  textEl.replaceWith(ta);
+  ta.focus();
+  ta.setSelectionRange(ta.value.length, ta.value.length);
+
+  // Hide the action buttons while editing
+  item.querySelector('.note-acts').style.opacity = '0';
+
+  let saved = false;
+  const save = () => {
+    if (saved) return;
+    saved = true;
+    const txt = ta.value.trim();
+    if (txt && txt !== original) { editNote(curDate, hour, id, txt); toast('Updated'); }
+    render();
+  };
+  ta.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); save(); }
+    if (e.key === 'Escape') { saved = true; render(); }
+  });
+  ta.addEventListener('blur', save);
+}
+
+/* ── Search ──────────────────────────────────────────────── */
+function doSearch(q) {
+  const container   = document.getElementById('searchResults');
+  const tlWrap      = document.getElementById('timelineWrap');
+
+  if (!q.trim()) {
+    container.innerHTML = '';
+    tlWrap.hidden = false;
+    return;
+  }
+  tlWrap.hidden = true;
+
+  const ql = q.toLowerCase();
+  const hits = [];
+
+  for (const d of Object.keys(db).sort((a, b) => b.localeCompare(a))) {
+    for (const h of Object.keys(db[d]).sort((a, b) => a - b)) {
+      for (const n of db[d][h]) {
+        if (n.text.toLowerCase().includes(ql)) {
+          hits.push({ date: d, hour: Number(h), text: n.text });
+        }
+      }
+    }
+  }
+
+  if (!hits.length) {
+    container.innerHTML = `<div class="empty"><p>No results for "<strong>${esc(q)}</strong>"</p></div>`;
+    return;
+  }
+
+  // Escape query for safe regex use; also escape for HTML before highlighting
+  const reQ = esc(q).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+  container.innerHTML =
+    `<div class="section-title">${hits.length} result${hits.length !== 1 ? 's' : ''}</div>` +
+    hits.map(r => {
+      const safeText = esc(r.text);
+      const highlighted = safeText.replace(new RegExp(`(${reQ})`, 'gi'), '<mark>$1</mark>');
+      return `
+        <div class="search-result">
+          <div class="sr-meta">${fmtDate(r.date)} &bull; ${fmtHour(r.hour)}</div>
+          <div>• ${highlighted}</div>
+        </div>`;
+    }).join('');
+}
+
+/* ── Export ──────────────────────────────────────────────── */
+/* ── Backup / Restore ───────────────────────────────────── */
+function backupAll() {
+  const payload = { version: 1, exported: new Date().toISOString(), data: db };
+  const ts = new Date().toISOString().slice(0, 10);
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' }));
+  a.download = 'hourly-backup-' + ts + '.json';
+  a.click();
+  const days = Object.keys(db).length;
+  let total = 0;
+  for (const d in db) for (const h in db[d]) total += db[d][h].length;
+  toast('Backup saved \u2014 ' + days + ' day' + (days !== 1 ? 's' : '') + ', ' + total + ' notes');
+}
+
+function triggerRestore() {
+  document.getElementById('restoreInput').click();
+}
+
+let _restorePayload = null;
+
+function handleRestoreFile(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  e.target.value = '';
+  const reader = new FileReader();
+  reader.onload = ev => {
+    let parsed;
+    try { parsed = JSON.parse(ev.target.result); }
+    catch { toast('\u274C Invalid file \u2014 not valid JSON'); return; }
+    const incoming = (parsed && typeof parsed.data === 'object' && !Array.isArray(parsed.data))
+      ? parsed.data : parsed;
+    if (typeof incoming !== 'object' || Array.isArray(incoming)) {
+      toast('\u274C Unrecognised backup format'); return;
+    }
+    let days = 0, notes = 0;
+    for (const d of Object.keys(incoming)) {
+      if (typeof incoming[d] !== 'object' || Array.isArray(incoming[d])) continue;
+      days++;
+      for (const h of Object.keys(incoming[d])) {
+        if (Array.isArray(incoming[d][h])) notes += incoming[d][h].length;
+      }
+    }
+    _restorePayload = incoming;
+    document.getElementById('rmFilename').textContent = file.name;
+    document.getElementById('rmInfo').textContent =
+      days + ' day' + (days !== 1 ? 's' : '') + '  \u00b7  ' + notes + ' note' + (notes !== 1 ? 's' : '');
+    document.getElementById('restoreModal').classList.add('open');
+  };
+  reader.readAsText(file);
+}
+
+function closeRestoreModal() {
+  document.getElementById('restoreModal').classList.remove('open');
+  _restorePayload = null;
+}
+
+function doRestore(mode) {
+  if (!_restorePayload) return;
+  if (mode === 'replace') {
+    db = _restorePayload;
+  } else {
+    for (const d of Object.keys(_restorePayload)) {
+      if (!db[d]) db[d] = {};
+      for (const h of Object.keys(_restorePayload[d])) {
+        if (!db[d][h]) db[d][h] = [];
+        const existingIds = new Set(db[d][h].map(n => n.id));
+        for (const n of _restorePayload[d][h]) {
+          if (!existingIds.has(n.id)) db[d][h].push(n);
+        }
+        db[d][h].sort((a, b) => a.ts - b.ts);
+      }
+    }
+  }
+  saveDb();
+  closeRestoreModal();
+  render();
+  toast(mode === 'replace' ? '\u2705 Restored \u2014 data replaced' : '\u2705 Merged successfully');
+}
+
+/* ── Export ──────────────────────────────────────────────── */
+function exportDay() {
+  const day = getDayNotes(curDate);
+  const hours = Object.keys(day).sort((a, b) => a - b);
+  if (!hours.length) { toast('No notes to export for this day'); return; }
+
+  let md = `# HourlyUpdates — ${fmtDate(curDate)}\n\n`;
+  for (const h of hours) {
+    md += `## ${fmtHour(Number(h))}\n`;
+    for (const n of day[h]) md += `- ${n.text}\n`;
+    md += '\n';
+  }
+
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([md], { type: 'text/markdown' }));
+  a.download = `notes-${curDate}.md`;
+  a.click();
+  toast('Exported as Markdown!');
+}
+
+/* ── Toast ───────────────────────────────────────────────── */
+let toastTimer;
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2200);
+}
+
+/* ── Theme ───────────────────────────────────────────────── */
+function applyTheme() {
+  document.documentElement.dataset.theme = isDark ? 'dark' : 'light';
+  document.getElementById('btnTheme').innerHTML = isDark ? '☀ <span>Light</span>' : '🌙 <span>Dark</span>';
+}
+
+/* ── Clock ───────────────────────────────────────────────── */
+function updateClock() {
+  document.getElementById('clock').textContent =
+    new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+}
+
+/* ── Master render ───────────────────────────────────────── */
+function render() {
+  updateQuickCard();
+  updateDateNav();
+  renderTimeline();
+  updateStats();
+  // Keep search results live if searching
+  const q = document.getElementById('searchInput').value;
+  if (q) doSearch(q);
+}
+
+/* ── Event wiring ────────────────────────────────────────── */
+
+// Quick-add card
+document.getElementById('qcInput').addEventListener('keydown', e => {
+  if (e.key !== 'Enter') return;
+  const t = e.target.value.trim();
+  if (!t) return;
+  addNote(curDate, new Date().getHours(), t);
+  e.target.value = '';
+  render();
+  toast('Note added!');
+});
+document.getElementById('qcBtn').addEventListener('click', () => {
+  const inp = document.getElementById('qcInput');
+  const t = inp.value.trim();
+  if (!t) return;
+  addNote(curDate, new Date().getHours(), t);
+  inp.value = '';
+  render();
+  toast('Note added!');
+});
+
+// Date navigation
+document.getElementById('btnPrev').addEventListener('click', () => {
+  curDate = shiftDate(curDate, -1); render();
+});
+document.getElementById('btnNext').addEventListener('click', () => {
+  if (curDate < todayStr()) { curDate = shiftDate(curDate, 1); render(); }
+});
+document.getElementById('dateMain').addEventListener('click', () => {
+  const picker = document.getElementById('datePicker');
+  picker.value = curDate;
+  picker.max = todayStr();
+  picker.showPicker?.();
+});
+document.getElementById('datePicker').addEventListener('change', e => {
+  if (e.target.value) { curDate = e.target.value; render(); }
+});
+
+// Header buttons
+document.getElementById('btnTheme').addEventListener('click', () => {
+  isDark = !isDark;
+  localStorage.setItem('theme', isDark ? 'dark' : 'light');
+  applyTheme();
+});
+document.getElementById('btnExport').addEventListener('click', exportDay);
+document.getElementById('btnBackup').addEventListener('click', backupAll);
+document.getElementById('btnRestore').addEventListener('click', triggerRestore);
+document.getElementById('restoreInput').addEventListener('change', handleRestoreFile);
+document.getElementById('btnModalClose').addEventListener('click', closeRestoreModal);
+document.getElementById('btnModalCancel').addEventListener('click', closeRestoreModal);
+document.getElementById('optMerge').addEventListener('click', () => doRestore('merge'));
+document.getElementById('optReplace').addEventListener('click', () => doRestore('replace'));
+document.getElementById('restoreModal').addEventListener('click', e => {
+  if (e.target === document.getElementById('restoreModal')) closeRestoreModal();
+});
+document.getElementById('btnSearch').addEventListener('click', () => {
+  searchOpen = !searchOpen;
+  const wrap = document.getElementById('searchWrap');
+  const tlWrap = document.getElementById('timelineWrap');
+  wrap.classList.toggle('on', searchOpen);
+  if (searchOpen) {
+    document.getElementById('searchInput').focus();
+  } else {
+    document.getElementById('searchInput').value = '';
+    document.getElementById('searchResults').innerHTML = '';
+    tlWrap.hidden = false;
+  }
+});
+document.getElementById('searchInput').addEventListener('input', e => doSearch(e.target.value));
+
+/* ── Boot ────────────────────────────────────────────────── */
+loadDb();
+applyTheme();
+render();
+updateClock();
+setInterval(updateClock, 1000);
+// Re-render every minute to catch hour rollovers and keep "Now" badge accurate
+setInterval(() => { if (curDate === todayStr()) render(); }, 60_000);
+</script>
+
+</body>
+</html>
